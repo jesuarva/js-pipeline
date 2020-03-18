@@ -1,0 +1,24 @@
+{
+  "name": "js-pipeline",
+  "version": "1.0.0",
+  "description": "A Pipeline implementation in JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jesuarva/js-pipeline.git"
+  },
+  "keywords": [
+    "Pipeline",
+    "JavaScript",
+    "Generators"
+  ],
+  "author": "Jean Surkouf Ariza Varela",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jesuarva/js-pipeline/issues"
+  },
+  "homepage": "https://github.com/jesuarva/js-pipeline#readme"
+}
