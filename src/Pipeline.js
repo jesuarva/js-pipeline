@@ -67,18 +67,6 @@ module.exports = function PipeLine(initialIterable) {
       }
       timeOutsList.add(setTimeout(run, 0, callbackFn, ++index));
     },
-    runAsPromise(callbackEffect) {
-      return new Promise((resolve, reject) => {
-        try {
-          this.runAsync(() => {
-            callbackEffect && callbackEffect();
-            resolve();
-          });
-        } catch (error) {
-          reject(error);
-        }
-      });
-    },
     *runAsSaga(options) {
       const { callbackEffect, argumentsArray, reduxSagaEffects } = options || {};
       const iterable = pipe.getLastIterable();
