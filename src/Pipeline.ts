@@ -1,6 +1,45 @@
-async function* createIterator(iterator, type, callbackFn) {
+interface iter {
+  length: number;
+}
+
+interface generatorObject {
+  next(value?: any): iteratorResult;
+  throw(value?: any): iteratorResult;
+  return(value?: any): iteratorResult;
+}
+
+interface iteratorResult {
+  value: any;
+  done: boolean;
+}
+
+type pipeLineResponse = {
+  done: true;
+  value: any[];
+};
+
+interface sagaFnOptions {
+  callbackEffect: <T>(response: pipeLineResponse[], ...others: T[] | []) => any;
+  callbackArguments: any[];
+}
+
+interface pipelineAPI {
+  runAsync(callback: (response: pipeLineResponse) => any): void;
+  runAsSaga(options: sagaFnOptions): void;
+  map(mapFunction: <T, S>(currentValue: T, index: number) => S | T, index: number): void;
+  filter(filterFunction: <T>(currentValue: T, index: number) => boolean): void;
+  effect(effectFn: <T>(currentValue: T, index: number) => any): void;
+  getPipeLine(): generatorObject;
+  stopPipeLine(): void;
+}
+
+async function* createIterator<T>(
+  iterable: iter & Iterable<T>,
+  type: string,
+  callbackFn: (value: any, index: number) => any,
+): ReturnType<any> {
   let index = -1;
-  for await (const value of iterator) {
+  for await (const value of iterable) {
     switch (type) {
       case 'filter':
         if (callbackFn(value, ++index)) yield value;
@@ -19,7 +58,7 @@ async function* createIterator(iterator, type, callbackFn) {
   }
 }
 
-module.exports = function PipeLine(initialIterable) {
+export = function PipeLine<T>(initialIterable: iter & Iterable<T>): pipelineAPI {
   if (Symbol.iterator in initialIterable === false) {
     throw TypeError('PIPELINE: The argument provided is not an `iterable` object');
   }
@@ -29,22 +68,22 @@ module.exports = function PipeLine(initialIterable) {
       const pipeLineLength = this.pipeLine.length;
       return this.pipeLine[pipeLineLength - 1];
     },
-    add(iterator) {
-      this.pipeLine.push(iterator);
+    add(iterable: iter & Iterable<T>) {
+      this.pipeLine.push(iterable);
     },
-    response: new Array(initialIterable.length),
+    response: new Array(initialIterable.length) as pipeLineResponse[],
   };
 
   const timeOutsList = {
-    list: [],
-    add(timeOut) {
+    list: [] as number[],
+    add(timeOut: ReturnType<typeof setTimeout>) {
       this.list.push(timeOut);
     },
     reset() {
       this.list.length = 0;
     },
     cancelAll() {
-      this.list.forEach(timeOut => {
+      this.list.forEach((timeOut: number) => {
         window.clearTimeout(timeOut);
       });
     },
