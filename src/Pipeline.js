@@ -1,18 +1,15 @@
 async function* createIterator(iterator, type, callbackFn) {
-  let index = 0;
+  let index = -1;
   for await (const value of iterator) {
     switch (type) {
       case 'filter':
-        if (callbackFn(value, index++)) yield value;
+        if (callbackFn(value, ++index)) yield value;
         break;
       case 'map':
-        yield callbackFn(value, index++);
-        break;
-      case 'pipe':
-        yield callbackFn(value, index++) || value;
+        yield callbackFn(value, ++index);
         break;
       case 'effect':
-        callbackFn(value);
+        callbackFn(value, ++index);
         yield value;
         break;
       default:
@@ -61,23 +58,22 @@ module.exports = function PipeLine(initialIterable) {
         timeOutsList.reset();
         pipe.response.length = index;
         callbackFn && callbackFn({ done, value: pipe.response });
-        return done;
+        return;
       } else {
         pipe.response[index] = value;
       }
       timeOutsList.add(setTimeout(run, 0, callbackFn, ++index));
     },
-    *runAsSaga(options) {
-      const { callbackEffect, argumentsArray, reduxSagaEffects } = options || {};
+    async *runAsSaga({ callbackEffect, callbackArguments = [] }) {
       const iterable = pipe.getLastIterable();
       while (true) {
         const { done } = iterable.next();
         if (done) {
           timeOutsList.reset();
-          yield callbackEffect && callbackEffect(...argumentsArray);
+          yield callbackEffect && callbackEffect(pipe.response, ...callbackArguments);
           break;
         }
-        yield reduxSagaEffects.delay(1);
+        await new Promise(resolve => setTimeout(resolve, 0));
       }
     },
     filter(callbackFn) {
@@ -93,16 +89,6 @@ module.exports = function PipeLine(initialIterable) {
     effect(callbackFn) {
       const iterator = pipe.getLastIterable();
       pipe.add(createIterator(iterator, 'effect', callbackFn));
-      return this;
-    },
-    asyncEffect(asyncCallbackFn) {
-      const iterator = pipe.getLastIterable();
-      pipe.add(createIterator(iterator, 'effect', asyncCallbackFn));
-      return this;
-    },
-    pipe(asyncCallbackFn) {
-      const iterator = pipe.getLastIterable();
-      pipe.add(createIterator(iterator, 'pipe', asyncCallbackFn));
       return this;
     },
     getPipeLine() {
