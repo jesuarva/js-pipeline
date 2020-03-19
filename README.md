@@ -117,7 +117,7 @@ Emulates `Array.map`.
 `mapFn`: Function that is invoke with each element of the iterable. Each time callback executes, the returned value is passed thought the `pipeline`.
 
 ```typescript
-interface API {
+interface pipelineAPI {
   map(mapFn: <T, S>(currentData: T, index: number) => S | T, index: number): void;
 }
 ```
@@ -128,7 +128,7 @@ Emulates `Array.filter`.
 `filterFn` is a predicate, to test each element of the iterable. Return true to keep the element, false otherwise.
 
 ```typescript
-interface API {
+interface pipelineAPI {
   filter(filterFn: <T>(currentData: T, index: number) => boolean): void;
 }
 ```
@@ -138,7 +138,7 @@ interface API {
 Meant to perform a side effect with the current chunk of data outside the pipeline data-flow.
 
 ```typescript
-interface API {
+interface pipelineAPI {
   effect(effectFn: <T>(currentValue: T, index: number) => any): void;
 }
 ```
@@ -161,7 +161,7 @@ interface generatorObject {
   return(value?: any): iteratorResult;
 }
 
-interface API {
+interface pipelineAPI {
   getIterator(): generatorObject;
 }
 ```
@@ -171,7 +171,7 @@ interface API {
 Stops the `pipeline`.
 
 ```typescript
-interface API {
+interface pipelineAPI {
   stopPipeLine(): void;
 }
 ```
@@ -186,7 +186,7 @@ type pipeLineResponse = {
   done: true;
   value: any[]; // Array of processed data.
 };
-interface API {
+interface pipelineAPI {
   runAsync(callback: (response: pipeLineResponse) => any): void;
 }
 ```
@@ -200,7 +200,7 @@ interface sagaFnOptions {
   callbackEffect: <T>(response: pipeLineResponse, ...others: T[] | []) => any;
   callbackArguments: any[];
 }
-interface API {
+interface pipelineAPI {
   runAsSaga(options: sagaFnOptions): void;
 }
 ```
@@ -208,22 +208,8 @@ interface API {
 ## Types & Interfaces
 
 ```typescript
-type mapFunction = <T, S>(currentValue: T, index: number) => S | T;
-interface API {
-  map(mapFunction: <T, S>(currentValue: T, index: number) => S | T, index: number): void;
-}
-
-interface API {
-  filter(filterFunction: <T>(currentValue: T, index: number) => boolean): void;
-}
-
-interface API {
-  effect(effectFn: <T>(currentValue: T, index: number) => any): void;
-}
-
-interface iteratorResult {
-  value: any;
-  done: boolean;
+interface iter {
+  length: number;
 }
 
 interface generatorObject {
@@ -232,27 +218,28 @@ interface generatorObject {
   return(value?: any): iteratorResult;
 }
 
-interface API {
-  getIterator(): generatorObject;
-}
-
-interface API {
-  stopPipeLine(): void;
+interface iteratorResult {
+  value: any;
+  done: boolean;
 }
 
 type pipeLineResponse = {
   done: true;
   value: any[];
 };
-interface API {
-  runAsync(callback: (response: pipeLineResponse) => any): void;
-}
 
 interface sagaFnOptions {
-  callbackEffect: <T>(response: pipeLineResponse, ...others: T[] | []) => any;
+  callbackEffect: <T>(response: pipeLineResponse[], ...others: T[] | []) => any;
   callbackArguments: any[];
 }
-interface API {
+
+interface pipelineAPI {
+  runAsync(callback: (response: pipeLineResponse) => any): void;
   runAsSaga(options: sagaFnOptions): void;
+  map(mapFunction: <T, S>(currentValue: T, index: number) => S | T, index: number): void;
+  filter(filterFunction: <T>(currentValue: T, index: number) => boolean): void;
+  effect(effectFn: <T>(currentValue: T, index: number) => any): void;
+  getPipeLine(): generatorObject;
+  stopPipeLine(): void;
 }
 ```
