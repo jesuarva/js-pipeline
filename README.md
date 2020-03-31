@@ -5,6 +5,10 @@ The `Pipeline` is implemented with JS generators
 
 There are currently two proposals to introduce a new `pipeline operator` in JavaScript: [tc39/proposal-pipeline-operator](https://github.com/tc39/proposal-pipeline-operator/wiki)
 
+# Instal
+
+> npm install @jesuarva/js-pipeline
+
 # How to initialize a Pipeline
 
 ```JavaScript

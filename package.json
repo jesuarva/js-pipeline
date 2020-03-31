@@ -1,10 +1,17 @@
 {
-  "name": "js-pipeline",
-  "version": "1.0.0",
+  "name": "@jesuarva/js-pipeline",
+  "version": "0.0.0",
   "description": "A Pipeline implementation in JavaScript.",
-  "main": "src/index.js",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "np": {
+    "yarn": false
+  },
   "scripts": {
-    "test": "test"
+    "test": "echo \"No test specified\""
   },
   "repository": {
     "type": "git",
