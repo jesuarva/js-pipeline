@@ -1,4 +1,4 @@
-# A [Pipeline](<https://en.wikipedia.org/wiki/Pipeline_(computing)>) implementation in JavaScript
+# A [Pipeline](<https://en.wikipedia.org/wiki/Pipeline_(computing)>) implementation in JavaScript with an API that mimics the Array iteration methods..
 
 It is an approach to solve performance issues processing big blocks of data in a non-blocking way.
 The `Pipeline` is implemented with JS generators
