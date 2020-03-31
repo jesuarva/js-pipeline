@@ -1,14 +1,11 @@
 {
   "name": "@jesuarva/js-pipeline",
-  "version": "1.0.1",
-  "description": "A Pipeline implementation in JavaScript.",
+  "version": "1.0.2",
+  "description": "A Pipeline implementation in JavaScript with an API that mimics the Array iteration methods.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "publishConfig": {
     "access": "public"
-  },
-  "np": {
-    "yarn": false
   },
   "scripts": {
     "test": "echo \"No test specified\""
